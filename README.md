@@ -1,15 +1,24 @@
-## 1. Settingan untuk 1 router 3 switch dan 5 client
+## 1. Setup Topologi
+Setting masin masing ip sesuai pembagian dan setting resolve dns nya 
+```
+ip addr add 192.168.122.10/24 dev eth0
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+```
 ![](image-19.png)
 
-## 2. Set dhcp untuk eth0 route  
+## 2. Setup dhcp untuk eth0 route  
+setting dhcp untuk router
+```
+iface eth0 inet dhcp
+```
 ![alt text](image-20.png)
 
-## 3. Cek koneksi Mika ke Eiri 
+## 3. Cek koneksi
 ![alt text](image-21.png)
 
 ## 4. setting router agar  bisa resolve dns 
 
-Setting router agar resovle dns google dan agar dapat terhubung ke dalam enternett
+Setting router agar resovle dns google dan agar dapat terhubung ke dalam internet
 
 ```
 sysctl -w net.ipv4.ip_forward=1
@@ -18,7 +27,6 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 ```
 
 ![alt text](image-22.png)
-( Per coban ping ke youtube.com)
 
 ## 5. Script cek status
 tulis menggunakan bash pada /root/cek_status.sh
@@ -38,7 +46,7 @@ Terapkan Display Filter
 ```
 icmp or dns
 ```
-
+<!-- ---------------------------------------- Gambar ------------------------------------ -->
 
 ## 7. Ftp server
 
@@ -104,11 +112,12 @@ login sebagai eiri
 ![alt text](image-26.png)
 
 ## 8. Analisa file yang dikirim knight 
+
 ![alt text](image-29.png)
 ![alt text](image-28.png)
 ![alt text](image-30.png)
 
-## 9. pembuktian mika tidak bisa melakukan write
+## 9. Pembuktian mika tidak bisa melakukan write
 
 ![alt text](image-31.png)
 
@@ -243,21 +252,25 @@ Ketiga dapatkan flag validasi akhir
 ```
 KOMJAR26{W1r3d_Brut3_H0yZsExJta1BCs3ArnWVuPx21}
 ```
-## 15. 
-1. Vendor id dari HID Device
+## 15. Analisa koneksi keyboard
+1. Mencari vendor id dari HID Device
 
 dengan cara menambahkan filter dibawah ini yang berguna untuk meihat informasi device yang dicolokkan
+```
    usb.bDescriptorType == 1
+```
    ![alt text](image-38.png)
-terlihat Vendor ID nya 0x046d dan Product ID 0xc31c
+terlihat Vendor ID nya `0x046d` dan Product ID `0xc31c`
 
-2. Usb device addr yang terdaftar ke keyboadr 
+2. Usb device addr yang terdaftar ke keyboard 
 
-filter dengan 
+filter dengan
+```
 usb.capdata
-dan terlihat device addres nya adalah 7
+```
+dan terlihat device addres nya adalah `7`
 
-3. Mengambil keystroke dengan mengambil command dibawah ini s
+3. Mengambil keystroke dengan tshark dibawah ini 
    tshark -r soal15.pcap -Y "usb.capdata" -T fields -e usb.capdata
 
 ```
@@ -323,7 +336,7 @@ dan terlihat device addres nya adalah 7
 0000000000000000
 ```
 
-Wired_Protocol_7_is_alive_2026
+`Wired_Protocol_7_is_alive_2026`
 
 ![alt text](image-39.png)
 # 16. Analisa malware yang dikirim knights_agent
@@ -381,12 +394,11 @@ dari gambar tersebut terlihat password korban adalah `pr0tocol_7_user`
 `ransomware`
 
 4. Tenggat dalam hari
-
 `3`
 
 5. Mail client ID
-
 `7719980706`
+
 ![alt text](image-41.png)
 
 
@@ -394,46 +406,24 @@ dari gambar tersebut terlihat password korban adalah `pr0tocol_7_user`
 
 1. versi dari TLS 
 
-disini kita inggal klik salah satu paket lalu liat pad Transport layer security nya
-pada ![alt text](image-42.png)
+Disini kita tinggal klik salah satu paket lalu lihat pada Transport layer security nya
+ ![alt text](image-42.png)
 
 2. Nama host yang dituju client 
 ![alt text](image-43.png)
 
-3.IP address HTTPS server
+3. IP address HTTPS server
 ![alt text](image-44.png)
 
 4. user agent dari HTTP
-
 decrypte terlebih dahulu row paket dengan kunci yang sudah dikirim , lalu pada HTTP stream akan terlihat user agent dan HTTP request methode nya 
-
 ![alt text](image-45.png)
 
 ![alt text](image-46.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-```
-
-
-
-
-
-
-
 ## Issue
 
-### waktu tidka sinkron
+### waktu tidak sinkron
 solusi ubah dan samakan waktu supaya bisa menginstall package
 
 ```
