@@ -418,7 +418,48 @@ SIZE knights_payload.exe
 ![alt text](image/image-35.png)
  KOMJAR26{FTP_Th3ft_dD5Dtocvo91O5rGC3Gip2kohC}
 
+# 17. Analisa paket HTTP
+1. mencari nama domain server pengirim file exe
+filter paket http
+```
+http.request
+```
+analisa paket server dengan follow http stram
+![alt text](image-1.png)
+terlihat nama domain adalah `wired-update.net`
 
+2. mencari alamat ip server
+dalam paket tadi terlihat bahwa ip destination nya adalah `203.0.112.42`
+![alt text](image-2.png)
+3. Nama file .exe 
+terligat dari http stream tadi bahwa nama file nya adalah navi_agent.exe
+
+4. Status response code dari download .exe
+terlihat dari http stram tadi code terimanya adalah `200`
+
+
+![alt text](image.png)
+
+# 18. Analisa paket SMB
+
+1. protocol yang digunakan mentransfer malware
+karena dari judulnya sudah diketahui SMB maka kita filter 
+```
+SMB | SMB2
+```
+dan ternyata menggunakan `SMB2` , dari gambar dibawah terbukti malware dikirim menggunakan `SMB2`
+![alt text](image-4.png)
+
+2. ip attacker pengirim malware
+terlihat dari gambar diatas bahwa source ip si pengirim yaitu
+`10.7.3.100`
+
+3. ip host
+dari gambar diatas juga menunjukan ip destination nya adalah `10.7.1.50`
+
+4. nama shared directory
+terlihat dari gambar 1 (hasil filter `SMB2`) menunjukan bahwa nama directory nya adalah `\\10.7.1.50\ADMIN$`
+![alt text](image-3.png)
 
 # 19. analisa file SMTP
 
