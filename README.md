@@ -1,136 +1,72 @@
-### for tomoro 
-auto eth0
-iface eth0 inet dhcp
-![alt text](image-18.png)
-### add ip addr for device interface (debinet)
-ip addr add 192.168.122.10/24 dev eth0
+## 1. Settingan untuk 1 router 3 switch dan 5 client
+![](image-19.png)
 
-### add ip addr for device interface (Vpcs)
-ip 192.168.1.10/24 192.168.1.1
+## 2. Set dhcp untuk eth0 route  
+![alt text](image-20.png)
 
-### setting gateway 
-ip route add default via 192.168.122.1
+## 3. Cek koneksi Mika ke Eiri 
+![alt text](image-21.png)
 
-### forwarded Ip
+## 4. setting router agar  bisa resolve dns 
+
+Setting router agar resovle dns google dan agar dapat terhubung ke dalam enternett
+
+```
 sysctl -w net.ipv4.ip_forward=1
-
-### expose private network to acces network
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-### set up dns in client 
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
-
-## set up router sh
-nano /root/cek_status.sh
-```
-#!/bin/bash
-echo "=== Interface Summary ==="
-ip -br a
-
-echo ""
-echo "=== NAT Table Status ==="
-iptables -t nat -L -v -n
-```
-chmod +x /root/cek_status.sh
-
-
-### setup network interface automatic
-nano /etc/network/interfaces
-
-```
-auto lo
-iface lo inet loopback
-
-# eth0 -> ke internet (Cloud/NAT)
-auto eth0
-iface eth0 inet dhcp
-    up echo nameserver 8.8.8.8 > /etc/resolv.conf
-    up sysctl -w net.ipv4.ip_forward=1
-    up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-# eth1 -> Switch1 (Alice, Mika)
-auto eth1
-iface eth1 inet static
-    address 192.168.1.1
-    netmask 255.255.255.0
-
-# eth2 -> Switch2 (Chisa)
-auto eth2
-iface eth2 inet static
-    address 192.168.2.1
-    netmask 255.255.255.0
-
-# eth3 -> Switch3 (Knights, Eiri)
-auto eth3
-iface eth3 inet static
-    address 192.168.3.1
-    netmask 255.255.255.0
 ```
 
-### reboot 
+![alt text](image-22.png)
+( Per coban ping ke youtube.com)
 
+## 5. Script cek status
+tulis menggunakan bash pada /root/cek_status.sh
+
+![alt text](image-24.png)
+hasil cek status 
+![alt text](image-23.png)
+
+## 6. Anomali Traffic Wireshark
+Memulai capture wireshark
+
+Menjalankan Traffic Generator
+
+Memasukkan file traffic_protocol ke wiresharknya (https://drive.google.com/drive/folders/1ZjFvWIjvAQAjE9pPthm7V_bGyaSt93lY?usp=sharing)
+
+Terapkan Display Filter
 ```
-ip link set eth0 down
-ip link set eth0 up
-
-ip link set eth1 down
-ip link set eth1 up
-
-ip link set eth2 down
-ip link set eth2 up
-
-ip link set eth3 down
-ip link set eth3 up
-```
-
-### set client presistance 
-
-```
-auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet static
-    address 192.168.1.10
-    netmask 255.255.255.0
-    gateway 192.168.1.1
-    up echo nameserver 8.8.8.8 > /etc/resolv.conf
+icmp or dns
 ```
 
-### Mika problem
- wget -O pcap.zip  'https://drive.google.com/uc?export=download&id=1G9zIi20ofbOgfffor-i-e7QKU3Ihe42W'
 
-install zip file and run , and wireshark
+## 7. Ftp server
 
-![alt text](image.png)
-
-### chisa problem ( vsFtpd setup )
-install ftpd
+membuat shared folder dan install vsftp
+```
 apt update && apt install vsftpd -y
 mkdir -p /var/wired/data
+```
+
+setting alice untuk read and write dengan cara setting kepimilikan alice
+
+```
 useradd -m -d /var/wired/data alice
 passwd alice
+chown alice:alice /var/wired/data
+```
+setting eiri agar di blacklist
 
-
-useradd -m -d /var/wired/data mika
-passwd mika
-
-
+```
 useradd -m -d /var/wired/data eiri
 passwd eiri
-
-
-## setup permission  untuk si alice 
-root@Chisa:~# chown alice:alice /var/wired/data
-
-## setup blacklist userlist
-
-root@Chisa:~# echo "eiri" >> /etc/vsftpd.userlist
-
-## edit config 
-
-
-root@Chisa:~# nano /etc/vtspd.conf
+echo "eiri" >> /etc/vsftpd.userlist
+```
+tambahkan user mika dan kita set folder agar untuk permission other hanya boleh read
+```
+chmod 755 /var/wired/data
+```
+lalu tambahkandonfig ini nano /etc/vtspd.conf
 
 ```
 write_enable=YES
@@ -157,97 +93,354 @@ ssl_enable=NO
 chown_uploads=NO
 chmod_enable=YES
 ```
+akses dari alice , sebelum itu install dulu 
 
-### and restart
- service vsftpd restart
-![alt text](image-1.png)
-![alt text](image-2.png)
+```
+apt install ftp -y
+```
+![alt text](image-25.png)
 
-## Knight problem 
+login sebagai eiri
+![alt text](image-26.png)
 
-## download and upload via alice account
-wget -O knights.zip 'https://drive.google.com/uc?export=download&id=1lFepK4wFmx55PnRki3NsHW-ivudSR0vg'
+## 8. Analisa file yang dikirim knight 
+![alt text](image-29.png)
+![alt text](image-28.png)
+![alt text](image-30.png)
 
-## tracking ireshark 
-ftp || ftp-data
-![alt text](image-3.png)
+## 9. pembuktian mika tidak bisa melakukan write
 
-### bukti mika tidak bisa upload
-![alt text](image-4.png)
+![alt text](image-31.png)
 
+file capture dari jaringan chisa
 
-##  serangan knights 
-ping -c 77 -s 128 -i 0.3 192.168.2.10
-![alt text](image-8.png)
-![alt text](image-5.png)
-![alt text](image-6.png)
-![alt text](image-7.png)
-<!-- -c 77     → kirim 77 paket
--s 128    → payload ICMP 128 bytes
--i 0.3    → interval antar paket 0,3 detik -->
+## 10. Analisis paket uji ketahanan ke chisa
 
-## telnet
-useradd -m phantom_user
-passwd phantom_user
-apt install inetutils-telnetd -y
-nano /etc/inetd.conf
+kirim 
+```
+ping -c 77 -s 128 -i 0.3 129.215.2.2
+```
+jalankan filter pada wireshark
+icmp
 
-### nonaktif
-#<off># telnet  stream  tcp  nowait  root  /usr/sbin/tcpd  /usr/sbin/telnetd
+Analisa ICMP Type dan code request
+![alt text](image-32.png)
 
-service openbsd-inetd restart
-ss -lntp 
-![alt text](image-9.png)
+Analisa ICMP Type dan code reply
+![alt text](image-33.png)
 
-![alt text](image-10.png)
+Analisis packet loss dan RTT
+![alt text](image-34.png)
+## 11. Analisis Telnet & Credential Sniffing
+Membuktikan bahwa protokol Telnet mengirimkan data (termasuk username dan password) secara plaintext (teks terbuka) sehingga mudah disadap.
 
-## nc port knight 
+Pertama install Telnet Server pada node target (misal: Chisa 192.168.2.2)
+```
+apt update && apt install telnetd -y
+```
+Kedua buat Akun Pengguna di server tersebut
+```
+adduser phantom_user
+Lalu masukkan password, misal: wired_ghost
+```
+Ketiga lakukan Koneksi Telnet dari node lain (misal: Alice)
+```
+telnet 192.168.2.2
+```
+Keempat masukkan username (phantom_user) dan password (wired_ghost)
 
-## buka dulu port
-apt install openssh-server -y
-service ssh start
+```
+Filter Wireshark: telnet
+```
 
-apt install apache2 -y
-service apache2 start
-echo "Hello from Knights" > /var/www/html/index.html
+Kesimpulan
+```
+Terlihat jelas bahwa username dan password terbaca secara utuh dalam bentuk teks terbuka tanpa enkripsi apa pun, yang menunjukkan kerentanan fatal pada protokol Telnet.
+```
 
-![alt text](image-11.png)
-![alt text](image-12.png)
-![alt text](image-13.png)
-![alt text](image-14.png)
-![alt text](image-15.png)
+## 12. Port Scanning & Analisis TCP Flag
+Mengidentifikasi port terbuka dan tertutup pada node Knights menggunakan Netcat serta menganalisis perbedaan TCP Flag di Wireshark.
 
-service ssh stop
-service apache2 stop
+Pertama jalankan perintah pemindaian port pada Knights (192.215.3.2)
+```
+nc -z -v 192.215.3.2 22 80 7777
+```
+```
+Filter Wireshark: tcp.port == 22 or tcp.port == 80 or tcp.port == 7777
+```
+Penjelasan
+```
+Port Terbuka (22 & 80): Saat Alice mengirim paket [SYN], Knights membalas dengan bendera [SYN, ACK], menandakan layanan aktif dan menerima koneksi.
 
-## stup ssh via publick key
+Port Tertutup (7777): Saat Alice mengetuk port 7777, Knights membalas dengan bendera [RST, ACK] (Reset), menandakan koneksi ditolak secara tegas karena tidak ada aplikasi yang listening di port tersebut.
+```
 
+## 13. Passwordless SSH & Key Exchange Analysis
+Mengganti autentikasi berbasis password dengan kunci kriptografi (Public Key) serta membuktikan keamanan SSH melalui proses Key Exchange.
 
-### dari sisi mika 
-ssh-keygen -t ed25519
-ls -la ~/.ssh/
-cat ~/.ssh/id_ed25519.pub
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... mika@Mika
-root@Mika:~# ssh mika_admin@192.168.3.10
-
-### sisi knihths
-useradd -m mika_admin
-mkdir -p /home/mika_admin/.ssh
-nano /home/mika_admin/.ssh/authorized_keys
-chmod 700 /home/mika_admin/.ssh
-chown -R mika_admin:mika_admin /home/mika_admin/.ssh
-chmod 600 /home/mika_admin/.ssh/authorized_keys
-chown -R mika_admin:mika_admin /home/mika_admin/.ssh
-
+Pertama di Node Knights: Buat user mika_admin, lalu edit konfigurasi SSH
+```
+adduser mika_admin
 nano /etc/ssh/sshd_config
-#PasswordAuthentication no
-PubkeyAuthentication yes
+```
+Lalu ubah baris PasswordAuthentication yes menjadi PasswordAuthentication no, lalu simpan. Restart layanan SSH
+```
 service ssh restart
+```
+Kedua di Node Mika: Buat user yang sama, buat pasangan kunci, lalu kirimkan ke Knights
+```
+adduser mika_admin
+su - mika_admin
+ssh-keygen
+# (Tekan Enter 3 kali tanpa passphrase)
+ssh-copy-id mika_admin@192.215.3.2
+# (Masukkan password sementara akun mika_admin di Knights)
+```
+Ketiga uji coba
+```
+ssh mika_admin@192.215.3.2
+```
+```
+Filter Wireshark: ssh
+```
+Penjelasan
+```
+Tangkap paket Protocol Version Exchange dan Key Exchange Init. Kredensial tidak terlihat dalam teks terbuka karena seluruh sesi langsung dienkripsi menggunakan kunci simetris yang dinegosiasikan melalui proses Diffie-Hellman Key Exchange di awal koneksi.
+```
 
-![alt text](image-16.png)
-Berdasarkan hasil capture Wireshark, koneksi SSH dari node Mika ke node Knights diawali dengan TCP three-way handshake, kemudian dilanjutkan dengan Protocol Version Exchange dan Key Exchange. Pada tahap Key Exchange, client dan server melakukan negosiasi algoritma kriptografi serta membentuk kunci sesi yang digunakan untuk melindungi komunikasi selanjutnya. Setelah proses tersebut, paket SSH yang ditangkap Wireshark tidak menampilkan isi komunikasi dalam bentuk plaintext.
+## 14. Forensik PCAP Brute Force & Validasi Soket
+Menganalisis file tangkapan serangan brute-force HTTP POST, mengidentifikasi kredensial yang jebol, dan melakukan validasi otomatis.
 
-Berbeda dengan Telnet yang mengirimkan username dan password tanpa enkripsi sehingga kredensial dapat terlihat ketika dilakukan packet capture, SSH menggunakan mekanisme kriptografi untuk melindungi session. Pada konfigurasi ini autentikasi juga menggunakan public key dan PasswordAuthentication no, sehingga password tidak dikirimkan melalui jaringan sama sekali.
+Langkah Analisis (Wireshark)
+```
+1. Buka file wired_bruteforce.pcapng di Wireshark.
 
-### brutoforce 
-![alt text](image-17.png)
+2. Filter menggunakan: http.request.method == "POST".
+
+3. Temukan IP Penyerang (172.26.7.50), IP Target (172.26.7.100), dan Port (8080).
+
+4. Periksa paket POST terakhir yang dibalas dengan status 200 OK (bukan 401 Unauthorized). Buka detail paket tersebut untuk melihat payload username (lain_admin) dan password (wired_pr0cotol_7).
+
+5. Cek paket respons 200 OK untuk melihat versi web server pada baris Server (Apache/2.4.62).
+```
+Langkah validasi soket
+
+Pertama jalankan perintah Netcat di console Router/Alice
+```
+nc 10.4.89.246 3401
+```
+Kedua masukkan data sesuai urutan pertanyaan
+```
+Attacker IP: 172.26.7.50
+
+Target IP & Port: 172.26.7.100:8080
+
+Password: wired_pr0cotol_7
+
+Web Server & Version: Apache/2.4.62
+```
+Ketiga dapatkan flag validasi akhir
+```
+KOMJAR26{W1r3d_Brut3_H0yZsExJta1BCs3ArnWVuPx21}
+```
+## 15. 
+1. Vendor id dari HID Device
+
+dengan cara menambahkan filter dibawah ini yang berguna untuk meihat informasi device yang dicolokkan
+   usb.bDescriptorType == 1
+   ![alt text](image-38.png)
+terlihat Vendor ID nya 0x046d dan Product ID 0xc31c
+
+2. Usb device addr yang terdaftar ke keyboadr 
+
+filter dengan 
+usb.capdata
+dan terlihat device addres nya adalah 7
+
+3. Mengambil keystroke dengan mengambil command dibawah ini s
+   tshark -r soal15.pcap -Y "usb.capdata" -T fields -e usb.capdata
+
+```
+02001a0000000000
+0000000000000000
+00000c0000000000
+0000000000000000
+0000150000000000
+0000000000000000
+0000080000000000
+0000000000000000
+0000070000000000
+0000000000000000
+02002d0000000000
+0000000000000000
+0200130000000000
+0000000000000000
+0000150000000000
+0000000000000000
+0000120000000000
+0000000000000000
+0000170000000000
+0000000000000000
+0000120000000000
+0000000000000000
+0000060000000000
+0000000000000000
+0000120000000000
+0000000000000000
+00000f0000000000
+0000000000000000
+02002d0000000000
+0000000000000000
+0000240000000000
+0000000000000000
+02002d0000000000
+0000000000000000
+00000c0000000000
+0000000000000000
+0000160000000000
+0000000000000000
+02002d0000000000
+0000000000000000
+0000040000000000
+0000000000000000
+00000f0000000000
+0000000000000000
+00000c0000000000
+0000000000000000
+0000190000000000
+0000000000000000
+0000080000000000
+0000000000000000
+02002d0000000000
+0000000000000000
+00001f0000000000
+0000000000000000
+0000270000000000
+0000000000000000
+00001f0000000000
+0000000000000000
+0000230000000000
+0000000000000000
+```
+
+Wired_Protocol_7_is_alive_2026
+
+![alt text](image-39.png)
+# 16. Analisa malware yang dikirim knights_agent
+
+1. cek ip penyerang dengan memfilter request command download
+
+```
+ftp.request.command == "RETR"
+```
+
+terlihat ip server 198.51.100.7
+![alt text](image-36.png)
+2. untuk melihat banner apa yang ditampilkan server dengan follow tcp stram pada row packet pengiriman malware
+![alt text](image-37.png)
+vsftpd 3.0.5
+
+3. Melihat username dan password yang digunakan penyerang pada follow tcp tadi 
+
+```
+USER knights_agent
+
+331 Please specify the password.
+
+PASS N4v1_s3cur3_2026
+```
+
+4. Melihat size paket malware tadi dari tcp stream tadi dan didapatkan 
+
+```
+SIZE knights_payload.exe
+
+213 524288
+
+```
+![alt text](image-35.png)
+ KOMJAR26{FTP_Th3ft_dD5Dtocvo91O5rGC3Gip2kohC}
+
+
+
+# 19. analisa file SMTP
+
+ 1. Email dari korban 
+
+pertama tama kita perlu  memfilter dari protocol smtp saja lalu menggunakan fitur tcp stream untuk melihat apa saja yang dikirim 
+
+![alt text](image-40.png)
+
+terlihat dari TCP stream tersebut  email korman adalah `victim@protocol7.co.jp`
+
+2. Pasword korban 
+
+dari gambar tersebut terlihat password korban adalah `pr0tocol_7_user`
+
+3. Tipe malware
+`ransomware`
+
+4. Tenggat dalam hari
+
+`3`
+
+5. Mail client ID
+
+`7719980706`
+![alt text](image-41.png)
+
+
+# 20 Analisa file enkripsi TLS
+
+1. versi dari TLS 
+
+disini kita inggal klik salah satu paket lalu liat pad Transport layer security nya
+pada ![alt text](image-42.png)
+
+2. Nama host yang dituju client 
+![alt text](image-43.png)
+
+3.IP address HTTPS server
+![alt text](image-44.png)
+
+4. user agent dari HTTP
+
+decrypte terlebih dahulu row paket dengan kunci yang sudah dikirim , lalu pada HTTP stream akan terlihat user agent dan HTTP request methode nya 
+
+![alt text](image-45.png)
+
+![alt text](image-46.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+## Issue
+
+### waktu tidka sinkron
+solusi ubah dan samakan waktu supaya bisa menginstall package
+
+```
+curl -sI https://www.google.com | grep -i ^date:
+// date: Wed, 16 Sep 2026 09:03:34 GMT 
+date -s "Wed Sep 16 09:04:00 UTC 2026"
+Wed Sep 16 09:04:00 UTC 2026
+root@Alice:~# date -u
+
+```
