@@ -48,17 +48,17 @@ Setting masin masing ip sesuai pembagian dan setting resolve dns nya
 ip addr add 192.168.122.10/24 dev eth0
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 ```
-![](image-19.png)
+![](image/image-19.png)
 
 ## 2. Setup dhcp untuk eth0 route  
 setting dhcp untuk router
 ```
 iface eth0 inet dhcp
 ```
-![alt text](image-20.png)
+![alt text](image/image-20.png)
 
 ## 3. Cek koneksi
-![alt text](image-21.png)
+![alt text](image/image-21.png)
 
 ## 4. setting router agar  bisa resolve dns 
 
@@ -70,14 +70,14 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 ```
 
-![alt text](image-22.png)
+![alt text](image/image-22.png)
 
 ## 5. Script cek status
 tulis menggunakan bash pada /root/cek_status.sh
 
-![alt text](image-24.png)
+![alt text](image/image-24.png)
 hasil cek status 
-![alt text](image-23.png)
+![alt text](image/image-23.png)
 
 ## 6. Anomali Traffic Wireshark
 Memulai capture wireshark
@@ -150,20 +150,20 @@ akses dari alice , sebelum itu install dulu
 ```
 apt install ftp -y
 ```
-![alt text](image-25.png)
+![alt text](image/image-25.png)
 
 login sebagai eiri
-![alt text](image-26.png)
+![alt text](image/image-26.png)
 
 ## 8. Analisa file yang dikirim knight 
 
-![alt text](image-29.png)
-![alt text](image-28.png)
-![alt text](image-30.png)
+![alt text](image/image-29.png)
+![alt text](image/image-28.png)
+![alt text](image/image-30.png)
 
 ## 9. Pembuktian mika tidak bisa melakukan write
 
-![alt text](image-31.png)
+![alt text](image/image-31.png)
 
 file capture dari jaringan chisa
 
@@ -177,13 +177,13 @@ jalankan filter pada wireshark
 icmp
 
 Analisa ICMP Type dan code request
-![alt text](image-32.png)
+![alt text](image/image-32.png)
 
 Analisa ICMP Type dan code reply
-![alt text](image-33.png)
+![alt text](image/image-33.png)
 
 Analisis packet loss dan RTT
-![alt text](image-34.png)
+![alt text](image/image-34.png)
 ## 11. Analisis Telnet & Credential Sniffing
 Membuktikan bahwa protokol Telnet mengirimkan data (termasuk username dan password) secara plaintext (teks terbuka) sehingga mudah disadap.
 
@@ -303,7 +303,7 @@ dengan cara menambahkan filter dibawah ini yang berguna untuk meihat informasi d
 ```
    usb.bDescriptorType == 1
 ```
-   ![alt text](image-38.png)
+   ![alt text](image/image-38.png)
 terlihat Vendor ID nya `0x046d` dan Product ID `0xc31c`
 
 2. Usb device addr yang terdaftar ke keyboard 
@@ -382,7 +382,7 @@ dan terlihat device addres nya adalah `7`
 
 `Wired_Protocol_7_is_alive_2026`
 
-![alt text](image-39.png)
+![alt text](image/image-39.png)
 # 16. Analisa malware yang dikirim knights_agent
 
 1. cek ip penyerang dengan memfilter request command download
@@ -392,9 +392,9 @@ ftp.request.command == "RETR"
 ```
 
 terlihat ip server 198.51.100.7
-![alt text](image-36.png)
+![alt text](image/image-36.png)
 2. untuk melihat banner apa yang ditampilkan server dengan follow tcp stram pada row packet pengiriman malware
-![alt text](image-37.png)
+![alt text](image/image-37.png)
 vsftpd 3.0.5
 
 3. Melihat username dan password yang digunakan penyerang pada follow tcp tadi 
@@ -415,7 +415,7 @@ SIZE knights_payload.exe
 213 524288
 
 ```
-![alt text](image-35.png)
+![alt text](image/image-35.png)
  KOMJAR26{FTP_Th3ft_dD5Dtocvo91O5rGC3Gip2kohC}
 
 
@@ -426,7 +426,7 @@ SIZE knights_payload.exe
 
 pertama tama kita perlu  memfilter dari protocol smtp saja lalu menggunakan fitur tcp stream untuk melihat apa saja yang dikirim 
 
-![alt text](image-40.png)
+![alt text](image/image-40.png)
 
 terlihat dari TCP stream tersebut  email korman adalah `victim@protocol7.co.jp`
 
@@ -443,7 +443,7 @@ dari gambar tersebut terlihat password korban adalah `pr0tocol_7_user`
 5. Mail client ID
 `7719980706`
 
-![alt text](image-41.png)
+![alt text](image/image-41.png)
 
 
 # 20 Analisa file enkripsi TLS
@@ -451,19 +451,19 @@ dari gambar tersebut terlihat password korban adalah `pr0tocol_7_user`
 1. versi dari TLS 
 
 Disini kita tinggal klik salah satu paket lalu lihat pada Transport layer security nya
- ![alt text](image-42.png)
+ ![alt text](image/image-42.png)
 
 2. Nama host yang dituju client 
-![alt text](image-43.png)
+![alt text](image/image-43.png)
 
 3. IP address HTTPS server
-![alt text](image-44.png)
+![alt text](image/image-44.png)
 
 4. user agent dari HTTP
 decrypte terlebih dahulu row paket dengan kunci yang sudah dikirim , lalu pada HTTP stream akan terlihat user agent dan HTTP request methode nya 
-![alt text](image-45.png)
+![alt text](image/image-45.png)
 
-![alt text](image-46.png)
+![alt text](image/image-46.png)
 
 ## Issue
 
