@@ -1,3 +1,47 @@
+# Jarkom-Modul-1-2026-K-08
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/Komunikasi_Data_%26_Jaringan-1_2026-1a1a2e?style=for-the-badge&logo=cisco&logoColor=white"/>
+<img src="https://img.shields.io/badge/GNS3-Network_Simulation-009FDF?style=for-the-badge&logo=gns3&logoColor=white"/>
+<img src="https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+<img src="https://img.shields.io/badge/Wireshark-Packet_Analysis-1679A7?style=for-the-badge&logo=wireshark&logoColor=white"/>
+
+</div>
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/FTP-vsFTPd-FF6B35?style=for-the-badge&logo=files&logoColor=white"/>
+<img src="https://img.shields.io/badge/SSH-OpenSSH-000000?style=for-the-badge&logo=openssh&logoColor=white"/>
+<img src="https://img.shields.io/badge/Telnet-Plaintext-red?style=for-the-badge&logo=gnometerminal&logoColor=white"/>
+<img src="https://img.shields.io/badge/SMTP-Mail_Protocol-D14836?style=for-the-badge&logo=gmail&logoColor=white"/>
+<img src="https://img.shields.io/badge/SMB-File_Sharing-0078D4?style=for-the-badge&logo=windows&logoColor=white"/>
+<img src="https://img.shields.io/badge/TLS%2FSSL-Encrypted_Traffic-3C873A?style=for-the-badge&logo=letsencrypt&logoColor=white"/>
+
+</div>
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/DNS-Resolver-blue?style=for-the-badge&logo=internetcomputer&logoColor=white"/>
+<img src="https://img.shields.io/badge/ICMP-Ping-orange?style=for-the-badge&logo=speedtest&logoColor=white"/>
+<img src="https://img.shields.io/badge/HTTP-Web_Traffic-005571?style=for-the-badge&logo=googlechrome&logoColor=white"/>
+<img src="https://img.shields.io/badge/NAT-iptables-8A2BE2?style=for-the-badge&logo=linux&logoColor=white"/>
+<img src="https://img.shields.io/badge/Netcat-Port_Scanning-black?style=for-the-badge&logo=gnu&logoColor=white"/>
+<img src="https://img.shields.io/badge/Shell-Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white"/>
+
+</div>
+
+---
+
+<div align="center">
+
+| Nama | NRP |
+|:-------:|:------:|
+| **Muhammad Rafi Pramudya Putra** | `5027251024` |
+| **Alif Ramzy Pasha Firdaus** | `5027251121` |
+</div>
+
+
 ## 1. Setup Topologi
 Setting masin masing ip sesuai pembagian dan setting resolve dns nya 
 ```
