@@ -229,7 +229,7 @@ Analisis packet loss dan RTT
 ## 11. Analisis Telnet & Credential Sniffing
 Membuktikan bahwa protokol Telnet mengirimkan data (termasuk username dan password) secara plaintext (teks terbuka) sehingga mudah disadap.
 
-Pertama install Telnet Server pada node target (misal: Chisa 192.168.2.2)
+Pertama install Telnet Server pada node target (misal: Chisa 192.215.2.2)
 ```
 apt update && apt install telnetd -y
 ```
@@ -240,7 +240,7 @@ Lalu masukkan password, misal: wired_ghost
 ```
 Ketiga lakukan Koneksi Telnet dari node lain (eiri)
 ```
-telnet 192.168.2.2
+telnet 192.215.2.2
 ```
 Keempat masukkan username (phantom_user) dan password (wired_ghost)
 
