@@ -61,7 +61,6 @@ iface eth0 inet dhcp
 ![alt text](image/image-21.png)
 
 ## 4. setting router agar  bisa resolve dns 
-
 Setting router agar resovle dns google dan agar dapat terhubung ke dalam internet
 
 ```
@@ -72,7 +71,48 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 ![alt text](image/image-22.png)
 
-## 5. Script cek status
+## 5. Script cek status dan Presistent settingan 
+setup network interface otomatis dengan menambahkan code dibawah untuk router dan untuk client
+nano /etc/network/interfaces
+```
+auto lo
+iface lo inet loopback
+
+# eth0 -> ke internet (Cloud/NAT)
+auto eth0
+iface eth0 inet dhcp
+    up echo nameserver 8.8.8.8 > /etc/resolv.conf
+    up sysctl -w net.ipv4.ip_forward=1
+    up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+# eth1 -> Switch1 (Alice, Mika)
+auto eth1
+iface eth1 inet static
+    address 192.168.1.1
+    netmask 255.255.255.0
+
+# eth2 -> Switch2 (Chisa)
+auto eth2
+iface eth2 inet static
+    address 192.168.2.1
+    netmask 255.255.255.0
+
+# eth3 -> Switch3 (Knights, Eiri)
+auto eth3
+iface eth3 inet static
+    address 192.168.3.1
+    netmask 255.255.255.0
+```
+
+dan juga untuk tiap client
+```
+auto eth0
+iface eth0 inet static
+    address 192.168.1.10
+    netmask 255.255.255.0
+    gateway 192.168.1.1
+    up echo nameserver 8.8.8.8 > /etc/resolv.conf
+```
 tulis menggunakan bash pada /root/cek_status.sh
 
 ![alt text](image/image-24.png)
@@ -517,5 +557,4 @@ curl -sI https://www.google.com | grep -i ^date:
 date -s "Wed Sep 16 09:04:00 UTC 2026"
 Wed Sep 16 09:04:00 UTC 2026
 root@Alice:~# date -u
-
 ```
