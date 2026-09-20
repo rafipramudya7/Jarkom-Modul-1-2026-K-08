@@ -233,12 +233,12 @@ Pertama install Telnet Server pada node target (misal: Chisa 192.168.2.2)
 ```
 apt update && apt install telnetd -y
 ```
-Kedua buat Akun Pengguna di server tersebut
+Kedua buat Akun Pengguna di server tersebut (Chisa)
 ```
 adduser phantom_user
 Lalu masukkan password, misal: wired_ghost
 ```
-Ketiga lakukan Koneksi Telnet dari node lain (misal: Alice)
+Ketiga lakukan Koneksi Telnet dari node lain (eiri)
 ```
 telnet 192.168.2.2
 ```
