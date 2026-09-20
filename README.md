@@ -73,7 +73,9 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 ## 5. Script cek status dan Presistent settingan 
 setup network interface otomatis dengan menambahkan code dibawah untuk router dan untuk client
+```
 nano /etc/network/interfaces
+```
 ```
 auto lo
 iface lo inet loopback
@@ -88,19 +90,19 @@ iface eth0 inet dhcp
 # eth1 -> Switch1 (Alice, Mika)
 auto eth1
 iface eth1 inet static
-    address 192.168.1.1
+    address 192.215.1.1
     netmask 255.255.255.0
 
 # eth2 -> Switch2 (Chisa)
 auto eth2
 iface eth2 inet static
-    address 192.168.2.1
+    address 192.215.2.1
     netmask 255.255.255.0
 
 # eth3 -> Switch3 (Knights, Eiri)
 auto eth3
 iface eth3 inet static
-    address 192.168.3.1
+    address 192.215.3.1
     netmask 255.255.255.0
 ```
 
@@ -108,9 +110,9 @@ dan juga untuk tiap client
 ```
 auto eth0
 iface eth0 inet static
-    address 192.168.1.10
+    address 192.215.1.10
     netmask 255.255.255.0
-    gateway 192.168.1.1
+    gateway 192.215.1.1
     up echo nameserver 8.8.8.8 > /etc/resolv.conf
 ```
 tulis menggunakan bash pada /root/cek_status.sh
