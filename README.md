@@ -422,6 +422,36 @@ dan terlihat device addres nya adalah `7`
 0000000000000000
 ```
 
+### gunakan script python dibawah ini untuk mendecode menjadi string 
+
+`decode.py`
+```
+import sys
+
+BASE = {0x2c:' ',0x2d:'-',0x2e:'=',0x2f:'[',0x30:']',0x31:'\\',0x33:';',0x34:"'",0x35:'`',0x36:',',0x37:'.',0x38:'/'}
+SHIFT = {0x2d:'_',0x2e:'+',0x2f:'{',0x30:'}',0x31:'|',0x33:':',0x34:'"',0x35:'~',0x36:'<',0x37:'>',0x38:'?'}
+
+def dec(code, sh):
+    if 0x04 <= code <= 0x1d:
+        c = chr(97 + code - 4)
+        return c.upper() if sh else c
+    if 0x1e <= code <= 0x27:
+        return ("!@#$%^&*()" if sh else "1234567890")[code - 0x1e]
+    return (SHIFT if sh else BASE).get(code, '')
+
+out = ''
+for line in sys.stdin:
+    b = bytes.fromhex(line.strip())
+    if len(b) == 8 and b[2]:
+        out += dec(b[2], b[0] & 0x22)
+print(out)
+
+```
+lalu jalankan kembali 
+```
+tshark -r soal15.pcap -Y "usb.capdata" -T fields -e usb.capdata | python3 decode.py
+```
+
 `Wired_Protocol_7_is_alive_2026`
 
 ![alt text](image/image-39.png)
@@ -559,4 +589,16 @@ curl -sI https://www.google.com | grep -i ^date:
 date -s "Wed Sep 16 09:04:00 UTC 2026"
 Wed Sep 16 09:04:00 UTC 2026
 root@Alice:~# date -u
+```
+
+### Ubah format wget
+
+ubah Url download dari 
+
+```
+https://drive.google.com/drive/folders/1ZjFvWIjvAQAjE9pPthm7V_bGyaSt93lY?usp=sharing
+```
+menjadi 
+```
+wget -O knights.zip 'https://drive.google.com/uc?export=download&id=1ZjFvWIjvAQAjE9pPthm7V_bGyaSt93lY'
 ```
